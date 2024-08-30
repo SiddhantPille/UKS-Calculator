@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Villa Pricing Calculator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+        :root {
+            --primary-color: #4a90e2;
+            --secondary-color: #f39c12;
+            --background-color: #f0f4f8;
+            --text-color: #333;
+            --border-radius: 8px;
+        }
+
+        .dark-mode {
+            --primary-color: #61a0ff;
+            --secondary-color: #ffa726;
+            --background-color: #1f2937;
+            --text-color: #e5e7eb;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+            min-height: 100vh;
+            padding: 20px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .dark-mode body {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .dark-mode .container {
+            background-color: rgba(30, 41, 59, 0.9);
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 30px;
+        }
+
+        .tab-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .tab-button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-weight: 600;
+        }
+
+        .tab-button:first-child {
+            border-top-left-radius: var(--border-radius);
+            border-bottom-left-radius: var(--border-radius);
+        }
+
+        .tab-button:last-child {
+            border-top-right-radius: var(--border-radius);
+            border-bottom-right-radius: var(--border-radius);
+        }
+
+        .tab-button.active {
+            background-color: var(--secondary-color);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 16px;
+            background-color: white;
+            color: #333;
+        }
+
+        .dark-mode input, .dark-mode select, .dark-mode textarea {
+            background-color: #2d3748;
+            color: #e5e7eb;
+            border-color: #4a5568;
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+        }
+
+        .input-group input {
+            flex-grow: 1;
+            margin-right: 10px;
+        }
+
+        .toggle-button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .toggle-button:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .action-button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-weight: 600;
+        }
+
+        .action-button:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .results {
+            margin-top: 30px;
+            border-top: 2px solid var(--primary-color);
+            padding-top: 20px;
+        }
+
+        .results h2 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .results-table th, .results-table td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+
+        .results-table th {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .dark-mode .results-table th {
+            background-color: #2d3748;
+        }
+
+        .dark-mode .results-table td {
+            border-color: #4a5568;
+        }
+
+        .mode-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: background-color 0.3s;
+            z-index: 1000;
+        }
+
+        .mode-toggle:hover {
+            background-color: var(--secondary-color);
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .action-button {
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button id="modeToggle" class="mode-toggle">Toggle Dark Mode</button>
+    <div class="container">
+        <h1>Villa Pricing Calculator</h1>
+
+        <div class="tab-container">
+            <button class="tab-button active" data-tab="tac">TAC</button>
+            <button class="tab-button" data-tab="b2b">B2B</button>
+        </div>
+
+        <form id="calculatorForm">
+            <div class="form-group">
+                <label for="company">Company:</label>
+                <select id="company" required>
+                    <option value="">Choose Company</option>
+                    <option value="Company A">Lohono Stays</option>
+                    <option value="Company B">Company B</option>
+                </select>
+            </div>
+
+            <div id="companyDetails" class="form-group"></div>
+
+            <div id="tacFields">
+                <div class="form-group">
+                    <label for="publishedPrice">Published Price of the Villa:</label>
+                    <div class="input-group">
+                        <input type="number" id="publishedPrice" required>
+                        <button type="button" class="toggle-button" data-toggle="publishedPrice">₹</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="discount">Discount on Published Price:</label>
+                    <div class="input-group">
+                        <input type="number" id="discount" required>
+                        <button type="button" class="toggle-button" data-toggle="discount">%</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="numberOfNights">Number of Nights:</label>
+                    <input type="number" id="numberOfNights" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="gstPercentage">GST Percentage:</label>
+                    <div class="input-group">
+                        <input type="number" id="gstPercentage" value="18" required>
+                        <button type="button" class="toggle-button" data-toggle="gstPercentage">%</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="securityDeposit">Refundable Security Deposit:</label>
+                    <div class="input-group">
+                        <input type="number" id="securityDeposit" required>
+                        <button type="button" class="toggle-button" data-toggle="securityDeposit">₹</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="commissionPercentage">Commission Percentage:</label>
+                    <div class="input-group">
+                        <input type="number" id="commissionPercentage" value="10" required>
+                        <button type="button" class="toggle-button" data-toggle="commissionPercentage">%</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="tdsPercentage">TDS Percentage:</label>
+                    <div class="input-group">
+                        <input type="number" id="tdsPercentage" value="5" required>
+                        <button type="button" class="toggle-button" data-toggle="tdsPercentage">%</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="b2bFields" style="display: none;">
+                <div class="form-group">
+                    <label for="b2bVillaRate">B2B Villa Rate:</label>
+                    <div class="input-group">
+                        <input type="number" id="b2bVillaRate" required>
+                        <button type="button" class="toggle-button" data-toggle="b2bVillaRate">₹</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="b2bCommission">Commission on B2B Rate:</label>
+                    <div class="input-group">
+                        <input type="number" id="b2bCommission" required>
+                        <button type="button" class="toggle-button" data-toggle="b2bCommission">%</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="b2bNights">Number of Nights:</label>
+                    <input type="number" id="b2bNights" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="b2bGstCommission">GST on Commission Rate:</label>
+                    <div class="input-group">
+                        <input type="number" id="b2bGstCommission" value="18" required>
+                        <button type="button" class="toggle-button" data-toggle="b2bGstCommission">%</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="b2bSecurityDeposit">Refundable Security Deposit:</label>
+                    <div class="input-group">
+                        <input type="number" id="b2bSecurityDeposit" required>
+                        <button type="button" class="toggle-button" data-toggle="b2bSecurityDeposit">₹</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="extraCharges">Extra Charges:</label>
+                <div class="input-group">
+                    <input type="number" id="extraCharges" required>
+                    <button type="button" class="toggle-button" data-toggle="extraCharges">₹</button>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="notes">Notes:</label>
+                <textarea id="notes" rows="3"></textarea>
+            </div>
+
+            <div class="action-buttons">
+                <button type="button" id="calculateBtn" class="action-button">Calculate</button>
+                <button type="button" id="resetBtn" class="action-button">Reset</button>
+                <button type="button" id="copyBtn" class="action-button">Copy to Clipboard</button>
+                <button type="button" id="whatsappBtn" class="action-button">Share via WhatsApp</button>
+                <button type="button" id="emailBtn" class="action-button">Share via Email</button>
+            </div>
+        </form>
+
+        <div id="results" class="results" style="display: none;">
+            <h2>Results:</h2>
+            <table class="results-table">
+                <tbody id="resultsBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const companies = {
+            'Company A': 'Com. Type: 17.5% discount & 12% TAC',
+            'Company B': 'Details about Company B structure...'
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('calculatorForm');
+            const calculateBtn = document.getElementById('calculateBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            const copyBtn = document.getElementById('copyBtn');
+            const whatsappBtn = document.getElementById('whatsappBtn');
+            const emailBtn = document.getElementById('emailBtn');
+            const modeToggle = document.getElementById('modeToggle');
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tacFields = document.getElementById('tacFields');
+            const b2bFields = document.getElementById('b2bFields');
+            const companySelect = document.getElementById('company');
+            const companyDetails = document.getElementById('companyDetails');
+            const toggleButtons = document.querySelectorAll('.toggle-button');
+
+            calculateBtn.addEventListener('click', calculatePrices);
+            resetBtn.addEventListener('click', resetCalculator);
+            copyBtn.addEventListener('click', copyToClipboard);
+            whatsappBtn.addEventListener('click', shareViaWhatsApp);
+            emailBtn.addEventListener('click', shareViaEmail);
+            modeToggle.addEventListener('click', toggleDarkMode);
+            companySelect.addEventListener('change', updateCompanyDetails);
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', switchTab);
+            });
+
+            toggleButtons.forEach(button => {
+                button.addEventListener('click', toggleUnit);
+            });
+
+            function calculatePrices() {
+                const activeTab = document.querySelector('.tab-button.active').getAttribute('data-tab');
+                let results;
+
+                if (activeTab === 'tac') {
+                    results = calculateTAC();
+                } else {
+                    results = calculateB2B();
+                }
+
+                displayResults(results);
+            }
+
+            function calculateTAC() {
+                const publishedPrice = getInputValue('publishedPrice');
+                const discount = getInputValue('discount');
+                const numberOfNights = getInputValue('numberOfNights');
+                const gstPercentage = getInputValue('gstPercentage');
+                const securityDeposit = getInputValue('securityDeposit');
+                const commissionPercentage = getInputValue('commissionPercentage');
+                const tdsPercentage = getInputValue('tdsPercentage');
+                const extraCharges = getInputValue('extraCharges');
+                const notes = document.getElementById('notes').value;
+
+                const discountAmount = (publishedPrice * discount) / 100;
+                const discountedPrice = publishedPrice - discountAmount;
+                const totalPriceNoTax = discountedPrice * numberOfNights;
+                const gstAmount = (totalPriceNoTax * gstPercentage) / 100;
+                const totalPayable = totalPriceNoTax + gstAmount + securityDeposit + extraCharges;
+
+                const commissionAmount = (totalPriceNoTax * commissionPercentage) / 100;
+                const gstOnCommission = (commissionAmount * gstPercentage) / 100;
+                const totalCommissionWithTax = commissionAmount + gstOnCommission;
+                const tdsOnCommission = (commissionAmount * tdsPercentage) / 100;
+                const totalCommissionAfterTds = totalCommissionWithTax - tdsOnCommission;
+
+                const netPayable = totalPayable - totalCommissionAfterTds;
+
+                return {
+                    'Total Price (No Tax)': totalPriceNoTax,
+                    'GST Amount': gstAmount,
+                    'Total Payable': totalPayable,
+                    'Commission Amount': commissionAmount,
+                    'GST on Commission': gstOnCommission,
+                    'Total Commission with Tax': totalCommissionWithTax,
+                    'TDS on Commission': tdsOnCommission,
+                    'Total Commission After TDS': totalCommissionAfterTds,
+                    'Net Payable': netPayable,
+                    'Notes': notes
+                };
+            }
+
+            function calculateB2B() {
+                const b2bVillaRate = getInputValue('b2bVillaRate');
+                const b2bCommission = getInputValue('b2bCommission');
+                const b2bNights = getInputValue('b2bNights');
+                const b2bGstCommission = getInputValue('b2bGstCommission');
+                const b2bSecurityDeposit = getInputValue('b2bSecurityDeposit');
+                const extraCharges = getInputValue('extraCharges');
+                const notes = document.getElementById('notes').value;
+
+                const totalB2BRate = b2bVillaRate * b2bNights;
+                const commissionAmount = (totalB2BRate * b2bCommission) / 100;
+                const gstOnCommission = (commissionAmount * b2bGstCommission) / 100;
+                const totalCommissionWithTax = commissionAmount + gstOnCommission;
+                const totalIncludingGST = totalB2BRate + totalCommissionWithTax + b2bSecurityDeposit + extraCharges;
+
+                return {
+                    'B2B Villa Rate': b2bVillaRate,
+                    'Number of Nights': b2bNights,
+                    'Total B2B Rate': totalB2BRate,
+                    'Commission Rate': `${b2bCommission}%`,
+                    'Commission Amount': commissionAmount,
+                    'GST on Commission': gstOnCommission,
+                    'Total Commission (Including GST)': totalCommissionWithTax,
+                    'Security Deposit': b2bSecurityDeposit,
+                    'Extra Charges': extraCharges,
+                    'Total (Including GST)': totalIncludingGST,
+                    'Notes': notes
+                };
+            }
+
+            function displayResults(results) {
+                const resultsBody = document.getElementById('resultsBody');
+                resultsBody.innerHTML = '';
+
+                for (const [key, value] of Object.entries(results)) {
+                    const row = resultsBody.insertRow();
+                    const cell1 = row.insertCell(0);
+                    const cell2 = row.insertCell(1);
+                    cell1.textContent = key;
+                    cell2.textContent = typeof value === 'number' ? `₹${value.toFixed(2)}` : value;
+                }
+
+                document.getElementById('results').style.display = 'block';
+            }
+
+            function getInputValue(id) {
+                return parseFloat(document.getElementById(id).value) || 0;
+            }
+
+            function resetCalculator() {
+                if (confirm('Are you sure you want to reset all fields?')) {
+                    form.reset();
+                    document.getElementById('results').style.display = 'none';
+                    companyDetails.textContent = '';
+                }
+            }
+
+            function copyToClipboard() {
+                const resultsText = getResultsText();
+                navigator.clipboard.writeText(resultsText).then(() => {
+                    alert('Results copied to clipboard!');
+                });
+            }
+
+            function shareViaWhatsApp() {
+                const resultsText = getResultsText();
+                window.open(`https://wa.me/?text=${encodeURIComponent(resultsText)}`);
+            }
+
+            function shareViaEmail() {
+                const resultsText = getResultsText();
+                const subject = encodeURIComponent('Villa Pricing Details');
+                const body = encodeURIComponent(resultsText);
+                window.location.href = `mailto:?subject=${subject}&body=${body}`;
+            }
+
+            function getResultsText() {
+                const rows = document.querySelectorAll('#resultsBody tr');
+                return Array.from(rows).map(row => `${row.cells[0].textContent}: ${row.cells[1].textContent}`).join('\n');
+            }
+
+            function toggleDarkMode() {
+                document.body.classList.toggle('dark-mode');
+                const isDarkMode = document.body.classList.contains('dark-mode');
+                modeToggle.textContent = isDarkMode ? 'Toggle Light Mode' : 'Toggle Dark Mode';
+            }
+
+        function switchTab() {
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+            const tab = this.getAttribute('data-tab');
+            if (tab === 'tac') {
+                tacFields.style.display = 'block';
+                b2bFields.style.display = 'none';
+            } else {
+                tacFields.style.display = 'none';
+                b2bFields.style.display = 'block';
+            }
+            // Reset company selection and results
+            companySelect.value = '';
+            companyDetails.textContent = '';
+            document.getElementById('results').style.display = 'none';
+        }
+
+        function updateCompanyDetails() {
+            companyDetails.textContent = companies[this.value] || '';
+        }
+
+        function toggleUnit() {
+            const inputId = this.getAttribute('data-toggle');
+            const currentUnit = this.textContent;
+            this.textContent = currentUnit === '%' ? '₹' : '%';
+        }
+    });
+    </script>
+</body>
+</html>
